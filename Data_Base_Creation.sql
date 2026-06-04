@@ -31,6 +31,10 @@ CREATE TABLE productos (
     FOREIGN KEY (id_proveedor) REFERENCES proveedores(id_proveedor)
 );
 
+ALTER TABLE productos
+ADD peso_kg DECIMAL(8,2) NOT NULL DEFAULT 0;
+
+
 CREATE TABLE clientes(
     id_cliente INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,

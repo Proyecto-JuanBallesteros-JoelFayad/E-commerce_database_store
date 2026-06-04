@@ -120,13 +120,70 @@ END;
 
 SELECT fn_FormatearNombreCompleto(1);
 
+-- 6) fn_EsClienteNuevo: Devuelve VERDADERO si un cliente realizó su primera compra en los últimos 30 días.
 
+CREATE FUNCTION fn_EsClienteNuevo2(
+    p_id_cliente INT
+)
+RETURNS BOOLEAN
 
+DETERMINISTIC
 
+BEGIN
 
+    DECLARE diasCliente INT;
 
+    SELECT TIMESTAMPDIFF(
+    	DAY,
+    	MIN(fecha_venta) ,
+    	CURDATE()
+	)
+    INTO diasCliente
+    FROM  ventas v
+    WHERE id_cliente = p_id_cliente;
 
+    RETURN diasCliente <= 30;
 
+END;
+
+SELECT fn_EsClienteNuevo(2);
+
+-- 7) fn_CalcularCostoEnvio: Calcula el costo de envío basado en el peso total de los productos de una venta.
+
+CREATE FUNCTION fn_CalcularCostoEnvio3(
+	p_id_venta INT
+)
+RETURNS DECIMAL(10,2)
+
+DETERMINISTIC
+
+BEGIN
+	DECLARE pesoEnvio DECIMAL(10,2);
+	DECLARE costoEnvio DECIMAL(10,2);
+	
+	SELECT
+		SUM(dv.cantidad * p.peso_kg) 
+	INTO pesoEnvio
+	FROM detalle_ventas dv
+	inner join productos p on p.id_producto = dv.id_producto
+	WHERE dv.id_venta = p_id_venta
+	group by id_venta;
+	
+	IF pesoEnvio <= 1 THEN
+    	SET costoEnvio = 10000;
+	ELSEIF pesoEnvio <= 5 THEN
+    	SET costoEnvio = 20000;
+	ELSEIF pesoEnvio <= 10 THEN
+    	SET costoEnvio = 35000;
+	ELSE
+    	SET costoEnvio = 50000;
+	END IF;
+
+	RETURN costoEnvio;
+
+END;
+
+SELECT fn_CalcularCostoEnvio3(13)
 
 
 

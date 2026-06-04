@@ -39,6 +39,46 @@ INSERT INTO productos (id_categoria, id_proveedor, nombre, descripcion, precio, 
 (5, 5, 'Control Inalámbrico Pro-Gaming', 'Compatible con PC y consolas, palancas con efecto Hall.', 240000.00, 130000.00, 18, 'CTR-GAME-001', TRUE),
 (5, 5, 'Audífonos Gamer 7.1 Surround', 'Cancelación pasiva de ruido, micrófono extraíble, luces LED.', 310000.00, 165000.00, 12, 'AUD-GAME-002', FALSE); -- Descontinuado / Inactivo
 
+UPDATE productos
+SET peso_kg = 0.20
+WHERE id_producto = 1;
+
+UPDATE productos
+SET peso_kg = 0.80
+WHERE id_producto = 2;
+
+UPDATE productos
+SET peso_kg = 0.30
+WHERE id_producto = 3;
+
+UPDATE productos
+SET peso_kg = 1.00
+WHERE id_producto = 4;
+
+UPDATE productos
+SET peso_kg = 3.50
+WHERE id_producto = 5;
+
+UPDATE productos
+SET peso_kg = 0.50
+WHERE id_producto = 6;
+
+UPDATE productos
+SET peso_kg = 2.00
+WHERE id_producto = 7;
+
+UPDATE productos
+SET peso_kg = 1.20
+WHERE id_producto = 8;
+
+UPDATE productos
+SET peso_kg = 0.60
+WHERE id_producto = 9;
+
+UPDATE productos
+SET peso_kg = 0.65
+WHERE id_producto = 10;
+
 -- =============================================================================
 -- 4. INSERTAR CLIENTES
 -- =============================================================================
