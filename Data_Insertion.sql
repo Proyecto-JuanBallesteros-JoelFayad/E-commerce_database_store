@@ -42,13 +42,57 @@ INSERT INTO productos (id_categoria, id_proveedor, nombre, descripcion, precio, 
 -- =============================================================================
 -- 4. INSERTAR CLIENTES
 -- =============================================================================
-INSERT INTO clientes (nombre, apellido, email, password_hash, direccion_envio) VALUES
-('Joel Stiven', 'Fayad Fandiño', 'joel.fayad@ejemplo.com', '$2b$12$K3h8j7H6g5F4d3S2a1Q0eOuYmZtWxVuTsRqPoOnMlKjIhGfEdCbA.', 'Calle 36 #24-15, Bucaramanga'),
-('María Camila', 'Rodríguez Gómez', 'camila.rod@ejemplo.com', '$2b$12$L9k8j7H6g5F4d3S2a1Q0eOuYmZtWxVuTsRqPoOnMlKjIhGfEdCbA.', 'Carrera 27 #54-02, Bucaramanga'),
-('Carlos Andrés', 'Mendoza Duarte', 'carlos.mendoza@ejemplo.com', '$2b$12$M0j9k8h7g6f5d4s3a2q1w.e.r.t.y.u.i.o.p.a.s.d.f.g.h.j.', 'Anillo Vial Km 2, Floridablanca'),
-('Diana Marcela', 'Silva Ortega', 'diana.silva@ejemplo.com', '$2b$12$N1k2j3h4g5f6d7s8a9q0w.e.r.t.y.u.i.o.p.a.s.d.f.g.h.j.', 'Calle 105 #18-40, Bucaramanga'),
-('Santiago', 'Alvarez Restrepo', 'santi.alvarez@ejemplo.com', '$2b$12$O2j3k4h5g6f7d8s9a0q1w.e.r.t.y.u.i.o.p.a.s.d.f.g.h.j.', 'Carrera 12 #32-11, Girón');
+-- toco cambira la tabla clientes porque una funcion pude calcular la edad
+-- del cliente y esa columna no estaba
 
+INSERT INTO clientes (
+    nombre,
+    apellido,
+    email,
+    password_hash,
+    direccion_envio,
+    fecha_nacimiento
+) VALUES
+(
+    'Joel Stiven',
+    'Fayad Fandiño',
+    'joel.fayad@ejemplo.com',
+    '$2b$12$K3h8j7H6g5F4d3S2a1Q0eOuYmZtWxVuTsRqPoOnMlKjIhGfEdCbA.',
+    'Calle 36 #24-15, Bucaramanga',
+    '2001-03-15'
+),
+(
+    'María Camila',
+    'Rodríguez Gómez',
+    'camila.rod@ejemplo.com',
+    '$2b$12$L9k8j7H6g5F4d3S2a1Q0eOuYmZtWxVuTsRqPoOnMlKjIhGfEdCbA.',
+    'Carrera 27 #54-02, Bucaramanga',
+    '1999-07-22'
+),
+(
+    'Carlos Andrés',
+    'Mendoza Duarte',
+    'carlos.mendoza@ejemplo.com',
+    '$2b$12$M0j9k8h7g6f5d4s3a2q1w.e.r.t.y.u.i.o.p.a.s.d.f.g.h.j.',
+    'Anillo Vial Km 2, Floridablanca',
+    '1995-11-08'
+),
+(
+    'Diana Marcela',
+    'Silva Ortega',
+    'diana.silva@ejemplo.com',
+    '$2b$12$N1k2j3h4g5f6d7s8a9q0w.e.r.t.y.u.i.o.p.a.s.d.f.g.h.j.',
+    'Calle 105 #18-40, Bucaramanga',
+    '2003-01-30'
+),
+(
+    'Santiago',
+    'Alvarez Restrepo',
+    'santi.alvarez@ejemplo.com',
+    '$2b$12$O2j3k4h5g6f7d8s9a0q1w.e.r.t.y.u.i.o.p.a.s.d.f.g.h.j.',
+    'Carrera 12 #32-11, Girón',
+    '1998-09-12'
+);
 -- =============================================================================
 -- 5. INSERTAR VENTAS (ENCABEZADOS)
 -- (Nota: Dejamos el total en 0 inicialmente, simulando que un trigger lo calculará,
@@ -66,22 +110,21 @@ INSERT INTO ventas (id_cliente, fecha_venta, estado, total) VALUES
 -- 6. INSERTAR DETALLE DE VENTAS (LÍNEAS DE ORDEN)
 -- (El precio_unitario_congelado coincide con el precio de la tabla productos)
 -- =============================================================================
-INSERT INTO detalle_ventas (id_venta, id_producto, cantidad, precio_unitario_congelado) VALUES
--- Venta 1 (Cliente 1): Compró 1 Mouse (120k) y 1 Control Gaming (240k) -> Total: 360,000.00
-(1, 1, 1, 120000.00),
-(1, 9, 1, 240000.00),
 
--- Venta 2 (Cliente 2): Compró 2 Camisetas (65k c/u) -> Total: 130,000.00
-(2, 3, 2, 65000.00),
+-- la insersion de los datos puede causar problemas por el id venta
+-- el auto increment en mi caso llego asta 13 por la pruebas pero toca tener cuidado
 
--- Venta 3 (Cliente 3): Compró 1 Teclado Mecánico -> Total: 280,000.00
-(3, 2, 1, 280000.00),
-
--- Venta 4 (Cliente 1): Compró 1 Cafetera -> Total: 220,000.00
-(4, 5, 1, 220000.00),
-
--- Venta 5 (Cliente 4): Compró 1 Tenis Urbanos -> Total: 180,000.00
-(5, 4, 1, 180000.00),
-
--- Venta 6 (Cliente 5): Intentó comprar 1 Tapete de Yoga (Venta Cancelada) -> Total: 95,000.00
-(6, 8, 1, 95000.00);
+INSERT INTO detalle_ventas (
+    id_venta,
+    id_producto,
+    cantidad,
+    precio_unitario_congelado
+)
+VALUES
+    (13, 1, 1, 120000.00),
+    (13, 9, 1, 240000.00),
+    (14, 3, 2, 65000.00),
+    (15, 2, 1, 280000.00),
+    (16, 5, 1, 220000.00),
+    (17, 4, 1, 180000.00),
+    (18, 8, 1, 95000.00);

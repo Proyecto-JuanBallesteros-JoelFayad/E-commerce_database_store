@@ -38,7 +38,8 @@ CREATE TABLE clientes(
     email VARCHAR(100) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
     direccion_envio VARCHAR(255),
-    fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP
+    fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP,
+    fecha_naciminto DATETIME
 );
 
 CREATE TABLE ventas(

@@ -70,19 +70,55 @@ SELECT fn_ObtenerPrecioProducto(2)
 
 -- 4) fn_CalcularEdadCliente: Calcula la edad de un cliente a partir de su fecha de nacimiento.
 
+CREATE FUNCTION fn_CalcularEdadCliente2(
+    p_id_cliente INT
+)
+RETURNS INT
 
-SELECT * FROM productos p
+DETERMINISTIC
 
+BEGIN
 
+    DECLARE edadCliente INT;
 
+    SELECT TIMESTAMPDIFF(
+    	YEAR,
+    	fecha_naciminto,
+    	CURDATE()
+	)
+    INTO edadCliente
+    FROM clientes c
+    WHERE id_cliente = p_id_cliente;
 
+    RETURN edadCliente;
 
+END;
 
+SELECT fn_CalcularEdadCliente2(1);
 
+-- 5) fn_FormatearNombreCompleto: Devuelve el nombre y apellido de un cliente en un formato estandarizado.
 
+CREATE FUNCTION fn_FormatearNombreCompleto(
+	p_id_cliente INT
+)
+RETURNS VARCHAR(100)
 
+DETERMINISTIC
 
+BEGIN
 
+    DECLARE nombreCompleto VARCHAR(100);
+
+    SELECT CONCAT(nombre, " ", apellido)
+    INTO nombreCompleto
+    FROM clientes c
+    WHERE id_cliente = p_id_cliente;
+
+    RETURN nombreCompleto;
+
+END;
+
+SELECT fn_FormatearNombreCompleto(1);
 
 
 
