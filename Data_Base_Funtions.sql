@@ -229,7 +229,101 @@ SELECT fn_ObtenerUltimaFechaCompra(1);
 
 -- 10) fn_ValidarFormatoEmail: Comprueba si una cadena de texto tiene un formato de correo electrónico válido.
 
+CREATE FUNCTION	 fn_ValidarFormatoEmail2(
+	p_email VARCHAR(100)	
+)
 
+RETURNS BOOLEAN
+
+DETERMINISTIC
+
+BEGIN
+
+	RETURN p_email REGEXP
+    '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$';
+
+END;
+
+SELECT fn_ValidarFormatoEmail2("manuelita@gmail.com");
+
+-- 11) fn_ObtenerNombreCategoria: Devuelve el nombre de la categoría a partir del ID de un producto.
+
+CREATE FUNCTION fn_ObtenerNombreCategoria(
+	p_id_producto INT
+)
+RETURNS VARCHAR(100)
+
+DETERMINISTIC
+
+BEGIN
+	DECLARE categoriaName VARCHAR(100);
+	
+	SELECT
+		c.nombre
+	INTO categoriaName
+	FROM productos p
+	INNER JOIN categorias c ON p.id_categoria = c.id_categoria
+	WHERE p.id_producto = p_id_producto;
+
+	RETURN categoriaName;
+
+END;
+
+SELECT fn_ObtenerNombreCategoria(2);
+
+-- 12) fn_ContarVentasCliente: Cuenta el número total de compras realizadas por un cliente.
+
+CREATE FUNCTION fn_ContarVentasCliente(
+    p_id_cliente INT
+)
+RETURNS INT
+
+DETERMINISTIC
+
+BEGIN
+
+    DECLARE ventasNum INT;
+
+    SELECT COUNT(*) 
+    INTO ventasNum
+    FROM  ventas v
+    WHERE id_cliente = p_id_cliente;
+
+    RETURN ventasNum;
+
+END;
+
+SELECT fn_ContarVentasCliente(1);
+
+-- 13) fn_CalcularDiasDesdeUltimaCompra: Devuelve el número de días transcurridos desde la última compra de un cliente.
+
+CREATE FUNCTION fn_CalcularDiasDesdeUltimaCompra2(
+    p_id_cliente INT
+)
+RETURNS INT
+
+DETERMINISTIC
+
+BEGIN
+
+    DECLARE fechaCompra INT;
+
+    SELECT TIMESTAMPDIFF(
+    	DAY,
+    	MAX(v.fecha_venta),
+    	CURDATE()
+	)
+    INTO fechaCompra
+    FROM  ventas v
+    WHERE v.id_cliente = p_id_cliente;
+
+    RETURN fechaCompra;
+
+END;
+
+SELECT * FROM ventas v
+
+SELECT fn_CalcularDiasDesdeUltimaCompra2(2);
 
 -- 16) fn_CalcularIVA: Calcula el impuesto (IVA) sobre el total de una venta.
 
