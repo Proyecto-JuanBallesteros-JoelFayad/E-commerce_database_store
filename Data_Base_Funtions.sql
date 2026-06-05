@@ -185,6 +185,107 @@ END;
 
 SELECT fn_CalcularCostoEnvio3(13)
 
+-- 8) fn_AplicarDescuento: Aplica un porcentaje de descuento a un monto dado.
+
+CREATE FUNCTION fn_AplicarDescuento2(
+    monto DECIMAL(10,2),
+    descuento DECIMAL(10,2)
+)
+RETURNS DECIMAL(10,2)
+
+DETERMINISTIC
+
+BEGIN
+
+    RETURN monto - (monto * descuento);
+
+END;
+
+SELECT fn_AplicarDescuento2(1000,0.2);
+
+-- 9) fn_ObtenerUltimaFechaCompra: Devuelve la fecha de la última compra de un cliente.
+
+CREATE FUNCTION fn_ObtenerUltimaFechaCompra(
+    p_id_cliente INT
+)
+RETURNS DATETIME
+
+DETERMINISTIC
+
+BEGIN
+
+    DECLARE fechaCompra DATETIME;
+
+    SELECT MAX(v.fecha_venta)
+    INTO fechaCompra
+    FROM  ventas v
+    WHERE id_cliente = p_id_cliente;
+
+    RETURN fechaCompra;
+
+END;
+
+SELECT fn_ObtenerUltimaFechaCompra(1);
+
+-- 10) fn_ValidarFormatoEmail: Comprueba si una cadena de texto tiene un formato de correo electrónico válido.
+
+
+
+-- 16) fn_CalcularIVA: Calcula el impuesto (IVA) sobre el total de una venta.
+
+CREATE FUNCTION fn_CalcularIVA(
+	p_id_venta INT
+)
+RETURNS DECIMAL(10,2)
+
+DETERMINISTIC
+
+BEGIN
+	DECLARE precioTotal DECIMAL(10,2);
+	
+	SELECT
+		SUM(dv.cantidad * p.costo) 
+	INTO precioTotal
+	FROM detalle_ventas dv
+	INNER JOIN productos p ON p.id_producto = dv.id_producto
+	WHERE dv.id_venta = p_id_venta
+	GROUP BY id_venta;
+
+	RETURN precioTotal + (precioTotal * 0.19);
+
+END;
+
+SELECT fn_CalcularIVA(13);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
