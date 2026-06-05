@@ -325,6 +325,75 @@ SELECT * FROM ventas v
 
 SELECT fn_CalcularDiasDesdeUltimaCompra2(2);
 
+-- 14) fn_DeterminarEstadoLealtad: Asigna un estado de lealtad (Bronce, Plata, Oro) a un cliente según su gasto total.
+
+CREATE FUNCTION fn_DeterminarEstadoLealtad2(
+    p_id_cliente INT
+)
+RETURNS VARCHAR(100)
+
+DETERMINISTIC
+
+BEGIN
+
+    DECLARE gastoTotal DECIMAL(10,2);
+    DECLARE estadoLealtad VARCHAR(100);
+
+    SELECT COALESCE(SUM(total),0)
+    INTO gastoTotal
+    FROM ventas
+    WHERE id_cliente = p_id_cliente;
+
+    IF gastoTotal < 500000 THEN
+        SET estadoLealtad = 'Bronce';
+    ELSEIF gastoTotal < 2000000 THEN
+        SET estadoLealtad = 'Plata';
+    ELSE
+        SET estadoLealtad = 'Oro';
+    END IF;
+
+    RETURN estadoLealtad;
+
+END;
+
+SELECT fn_DeterminarEstadoLealtad2(13)
+
+-- 15) fn_GenerarSKU: Genera un código de producto (SKU) único basado en su nombre y categoría.
+
+
+CREATE FUNCTION fn_GenerarSKU(
+    p_id_producto INT
+)
+RETURNS VARCHAR(20)
+
+DETERMINISTIC
+
+BEGIN
+
+    DECLARE nombreProducto VARCHAR(50);
+    DECLARE nombreCategoria VARCHAR(100);
+    DECLARE skuGenerado VARCHAR(20);
+
+    SELECT p.nombre, c.nombre
+    INTO nombreProducto, nombreCategoria
+    FROM productos p
+    INNER JOIN categorias c ON c.id_categoria = p.id_categoria
+    WHERE p.id_producto = p_id_producto;
+
+    SET skuGenerado = CONCAT(
+        UPPER(LEFT(nombreProducto,3)),
+        '-',
+        UPPER(LEFT(nombreCategoria,3)),
+        '-',
+        p_id_producto
+    );
+
+    RETURN skuGenerado;
+
+END;
+
+SELECT fn_GenerarSKU(1);
+
 -- 16) fn_CalcularIVA: Calcula el impuesto (IVA) sobre el total de una venta.
 
 CREATE FUNCTION fn_CalcularIVA(
@@ -350,38 +419,3 @@ BEGIN
 END;
 
 SELECT fn_CalcularIVA(13);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
