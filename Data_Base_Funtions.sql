@@ -419,3 +419,119 @@ BEGIN
 END;
 
 SELECT fn_CalcularIVA(13);
+
+-- 17) fn_ObtenerStockTotalPorCategoria: Suma el stock de todos los productos de una categoria.
+
+CREATE FUNCTION fn_ObtenerStockTotalPorCategoria(
+    p_id_categoria INT
+)
+RETURNS INT
+
+DETERMINISTIC
+
+BEGIN
+
+    DECLARE stockTotal INT;
+
+    SELECT COALESCE(SUM(stock), 0)
+    INTO stockTotal
+    FROM productos
+    WHERE id_categoria = p_id_categoria;
+
+    RETURN stockTotal;
+
+END;
+
+SELECT fn_ObtenerStockTotalPorCategoria(1);
+
+-- 18) fn_EstimarFechaEntrega: Calcula la fecha estimada de entrega de un pedido segun la ubicacion del cliente.
+
+CREATE FUNCTION fn_EstimarFechaEntrega2(
+    p_id_venta INT
+)
+RETURNS DATE
+
+DETERMINISTIC
+
+BEGIN
+    DECLARE diasEntrega INT;
+    DECLARE ciudadCliente VARCHAR(100);
+
+    SELECT TRIM(SUBSTRING_INDEX(c.direccion_envio, ',',-1))
+    INTO ciudadCliente
+    FROM ventas v
+    INNER JOIN clientes c ON c.id_cliente = v.id_cliente
+    WHERE v.id_venta = p_id_venta;
+
+    IF ciudadCliente LIKE '%Bucaramanga%' THEN
+        SET diasEntrega = 2;
+    ELSEIF ciudadCliente LIKE '%Bogota%' OR ciudadCliente LIKE '%Bogotá%' THEN
+        SET diasEntrega = 3;
+    ELSEIF ciudadCliente LIKE '%Medellin%' OR ciudadCliente LIKE '%Medellín%' THEN
+        SET diasEntrega = 4;
+    ELSE
+        SET diasEntrega = 7;
+    END IF;
+
+    RETURN DATE_ADD(CURDATE(), INTERVAL diasEntrega DAY);
+
+END;
+
+SELECT fn_EstimarFechaEntrega2(13);
+
+-- 19) fn_ConvertirMoneda: Convierte un monto a otra moneda usando una tasa de cambio fija.
+
+CREATE FUNCTION fn_ConvertirMoneda(
+    monto DECIMAL(10,2),
+    moneda_destino VARCHAR(10)
+)
+RETURNS  DECIMAL(10,2)
+
+DETERMINISTIC
+
+BEGIN
+
+    DECLARE tasaCambio  DECIMAL(10,4);
+
+    -- tasas fijas al momento de hacer esto, igual esto deberia venir de una tabla
+    IF moneda_destino = 'USD' THEN
+        SET tasaCambio = 0.00025;
+    ELSEIF moneda_destino = 'EUR' THEN
+        SET tasaCambio = 0.00023;
+    ELSEIF moneda_destino = 'MXN' THEN
+        SET tasaCambio = 0.0042;
+    ELSE
+        SET tasaCambio = 1; -- si no reconoce la moneda devuelve lo mismo
+    END IF;
+
+    RETURN ROUND(monto * tasaCambio, 2);
+
+END;
+
+SELECT fn_ConvertirMoneda(120000, 'USD');
+
+-- 20) fn_ValidarComplejidadContraseña: Verifica si una contraseña cumple con los criterios de seguridad (longitud, caracteres, etc.)
+
+CREATE FUNCTION fn_ValidarComplejidadContrasena(
+    p_contrasena VARCHAR(255)
+)
+RETURNS BOOLEAN
+
+DETERMINISTIC
+
+BEGIN
+    DECLARE esValida BOOLEAN DEFAULT FALSE;
+
+    IF LENGTH(p_contrasena) >= 8
+        AND p_contrasena REGEXP '[0-9]'
+        AND p_contrasena REGEXP '[a-z]'
+        AND p_contrasena REGEXP '[A-Z]'
+    THEN
+        SET esValida = TRUE;
+    END IF;
+
+    RETURN esValida;
+
+END;
+
+SELECT fn_ValidarComplejidadContrasena('MiClave123');
